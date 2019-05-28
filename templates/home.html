@@ -8,7 +8,7 @@
          <nav class="navbar navbar-inverse navbar-fixed-top">
             <div class="container">
                <div class="navbar-header">
-                  <a class="navbar-brand" href="#">URL Shortener for Dummies</a>
+                  <a class="navbar-brand" href="#">SPG Shortener</a>
                </div>
                <div id="navbar" class="navbar-collapse collapse">
                </div>
@@ -22,10 +22,11 @@
                {% if not short_url %}
                <div class="row">
                   <div class="col-md-offset-5 col-md-3">
-                     <h4>Enter URL to shorten.</h4>
+                     <h4>Enter URL to be shorten:</h4>
                      <form method="post" class="navbar-form navbar-right" action="">
                         <div class="form-group">
                            <input type="text" id="url" name="url" class="form-control input-lg chat-input" placeholder="URL" />
+                           <input type="number" id="times" name="times" class="form-control input-lg chat-input" placeholder="Times" />
                            <button type="submit" class="btn btn-lg btn-info">Submit</button>
                         </div>
                      </form>
@@ -33,13 +34,12 @@
                </div>
                {% else %}
                <div>
-                  Enjoy, your shortened URL is: <a href="{{short_url}}"> {{short_url}}</a>
+                  Your shortened URL is: <a href="{{short_url}}"> {{short_url}}</a>
                </div>
                {% endif %}
             </div>
          </div>
          <footer>
-            <p>&copy; Naren 2015</p>
          </footer>
          </div> 
       </body>
