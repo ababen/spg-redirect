@@ -38,7 +38,7 @@ def home():
 
 @app.route('/<short_url>')
 def redirect_short_url(short_url):
-    url = '/'  # fallback if no URL is found
+    url = 'https://spg-redirect.herokuapp.com/'  # fallback if no URL is found
     try:
         result = query_db('SELECT * FROM RISP WHERE FILENO=?', [short_url])
         if result is not None and result[2] == 0:
@@ -50,8 +50,7 @@ def redirect_short_url(short_url):
                         cursor.execute('UPDATE RISP SET USED = ? WHERE FILENO = ?', (value1, value2))
         elif result is None:
             message = 'We are not able to locate your case'
-            url = 'error.html'
-            return render_template('error.html', message)
+            return render_template('error.html', message=message)
         else:
             update_count(result)
             url = 'https://www.spglawfirm.com/risperdal-message-thank-you/'
@@ -59,7 +58,8 @@ def redirect_short_url(short_url):
     except Exception as e:
         print(e)
         message = 'There is some kind of error!'
-    return render_template('error.html', message)
+        return render_template('error.html', message=message)
+    return redirect(url)
 
 
 if __name__ == '__main__':
