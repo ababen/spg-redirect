@@ -31,25 +31,13 @@ def query_db(query, args=(), one=False):
     return (rv[0] if rv else None) if one else rv
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def home():
-    if request.method == 'POST':
-        original_url = request.form.get('url')
-        if urlparse(original_url).scheme == '':
-            url = 'https://' + original_url
-        else:
-            url = original_url
-        with sqlite3.connect('urls.db') as conn:
-            cursor = conn.cursor()
-            res = cursor.execute(
-                'INSERT INTO WEB_URL (URL) VALUES (?, ?)', [url])
-        return render_template('home.html', short_url=host + url)
     return render_template('home.html')
 
 
 @app.route('/<short_url>')
 def redirect_short_url(short_url):
-    # decoded = toBase10(short_url)
     url = host  # fallback if no URL is found
     try:
         result = query_db('SELECT * FROM RISP WHERE FILENO=?', [short_url])
@@ -67,7 +55,7 @@ def redirect_short_url(short_url):
         else:
             print('This URL has already been used.')
             url = 'https://www.spglawfirm.com/risperdal-message-thank-you/'
-        return redirect(url)
+            return redirect(url)
     except Exception as e:
         print(e)
     return redirect(url)
@@ -77,4 +65,4 @@ if __name__ == '__main__':
     # This code checks whether database table is created or not
     # table_check()
     # app.run(debug=True)
-    app.run(host=host)
+    app.run()

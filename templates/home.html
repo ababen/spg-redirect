@@ -19,28 +19,15 @@
          <div class="jumbotron">
             <div class="container">
                <br />
-               {% if not short_url %}
                <div class="row">
                   <div class="col-md-offset-5 col-md-3">
-                     <h4>Enter URL to be shorten:</h4>
-                     <form method="post" class="navbar-form navbar-right" action="">
-                        <div class="form-group">
-                           <input type="text" id="url" name="url" class="form-control input-lg chat-input" placeholder="URL" />
-                           <input type="number" id="times" name="times" class="form-control input-lg chat-input" placeholder="Times" />
-                           <button type="submit" class="btn btn-lg btn-info">Submit</button>
-                        </div>
-                     </form>
+                     <h4>Welcome to SPG Redirect</h4>
                   </div>
                </div>
-               {% else %}
-               <div>
-                  Your shortened URL is: <a href="{{short_url}}"> {{short_url}}</a>
-               </div>
-               {% endif %}
             </div>
          </div>
          <footer>
          </footer>
-         </div> 
+         </div>
       </body>
    </html>
