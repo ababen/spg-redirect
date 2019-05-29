@@ -22,6 +22,14 @@ import base64
 # Assuming urls.db is in your app root folder
 app = Flask(__name__)
 host = 'https://spg-redirect.herokuapp.com/'
+DATABASE = 'urls.db'
+
+
+def get_db():
+    db = getattr(g, '_database', None)
+    if db is None:
+        db = g._database = sqlite3.connect(DATABASE)
+    return db
 
 
 def query_db(query, args=(), one=False):
