@@ -2,6 +2,7 @@ from flask import Flask, request, render_template, redirect, g
 from sqlite3 import OperationalError
 import sqlite3
 
+'''
 from math import floor
 import string
 try:
@@ -17,11 +18,11 @@ except ImportError:
     from string import lowercase as ascii_lowercase
     from string import uppercase as ascii_uppercase
 import base64
-
+'''
 
 # Assuming urls.db is in your app root folder
 app = Flask(__name__)
-host = 'https://spg-redirect.herokuapp.com/'
+# host = 'https://spg-redirect.herokuapp.com/'
 DATABASE = 'urls.db'
 
 
@@ -38,6 +39,13 @@ def query_db(query, args=(), one=False):
     cur.close()
     return (rv[0] if rv else None) if one else rv
 
+def update_count(result):
+    with sqlite3.connect('urls.db') as conn:
+                value1 = int(result[2]) + 1
+                value2 = result[1]
+                cursor = conn.cursor()
+                cursor.execute('UPDATE RISP SET USED = ? WHERE FILENO = ?', (value1, value2))
+                return cursor
 
 @app.route('/')
 def home():
@@ -46,10 +54,10 @@ def home():
 
 @app.route('/<short_url>')
 def redirect_short_url(short_url):
-    url = host  # fallback if no URL is found
+    url = '/'  # fallback if no URL is found
     try:
         result = query_db('SELECT * FROM RISP WHERE FILENO=?', [short_url])
-        if result is not None and result[2] < 1:
+        if result is not None and result[2] == 0:
             url = 'https://www.spglawfirm.com/risperdal-message'
             with sqlite3.connect('urls.db') as conn:
                         value1 = int(result[2]) + 1
@@ -57,11 +65,12 @@ def redirect_short_url(short_url):
                         cursor = conn.cursor()
                         cursor.execute('UPDATE RISP SET USED = ? WHERE FILENO = ?', (value1, value2))
         elif result is None:
+            update_count(result)
             message = 'We are not able to locate your case'
             url = 'error.html'
             return redirect(url, Response=message)
         else:
-            print('This URL has already been used.')
+            update_count(result)
             url = 'https://www.spglawfirm.com/risperdal-message-thank-you/'
             return redirect(url)
     except Exception as e:
