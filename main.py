@@ -102,20 +102,25 @@ def query_db(query, args=(), one=False):
 def redirect_short_url(short_url):
     # decoded = toBase10(short_url)
     url = host  # fallback if no URL is found
-    result = query_db('SELECT * FROM RISP WHERE FILENO=?', [short_url])
-    print(result)
-    if result[2] < 1:
-        url = 'https://www.google.com'
-        with sqlite3.connect('urls.db') as conn:
-                    cursor = conn.cursor()
-                    sql = "UPDATE RISP SET USED = %s WHERE FILENO = %s"
-                    val = (result[2]+1, result[1])
-                    cursor.execute(sql, val)
-                    conn.execute()
-                    print(cursor.rowcount, "record(s) affected")
-    else:
-        print('This URL has already been used.')
-        url = 'https://www.aol..com'
+    try:
+        result = query_db('SELECT * FROM RISP WHERE FILENO=?', [short_url])
+        if result is not None and result[2] < 1:
+            url = 'https://www.spglawfirm.com/risperdal-message'
+            with sqlite3.connect('urls.db') as conn:
+                        value1 = int(result[2]) + 1
+                        value2 = result[1]
+                        cursor = conn.cursor()
+                        cursor.execute('UPDATE RISP SET USED = ? WHERE FILENO = ?', (value1, value2))
+        elif result is None:
+            message = 'We are not able to locate your case'
+            url = 'error.html'
+            return redirect(url, Response=message)
+        else:
+            print('This URL has already been used.')
+            url = 'https://www.spglawfirm.com/risperdal-message-thank-you/'
+        return redirect(url)
+    except Exception as e:
+        print(e)
     return redirect(url)
 
     '''    
@@ -132,7 +137,8 @@ def redirect_short_url(short_url):
             print(e)
         return redirect(url)
     '''
-    
+
+# http://127.0.0.1:5000/148542
 
 
 if __name__ == '__main__':
