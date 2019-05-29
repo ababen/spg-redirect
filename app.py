@@ -2,28 +2,10 @@ from flask import Flask, request, render_template, redirect, g
 from sqlite3 import OperationalError
 import sqlite3
 
-'''
-from math import floor
-import string
-try:
-    from urllib.parse import urlparse  # Python 3
-    str_encode = str.encode
-except ImportError:
-    from urlparse import urlparse  # Python 2
-    str_encode = str
-try:
-    from string import ascii_lowercase
-    from string import ascii_uppercase
-except ImportError:
-    from string import lowercase as ascii_lowercase
-    from string import uppercase as ascii_uppercase
-import base64
-'''
-
 # Assuming urls.db is in your app root folder
 app = Flask(__name__)
-# host = 'https://spg-redirect.herokuapp.com/'
 DATABASE = 'urls.db'
+# host = 'https://spg-redirect.herokuapp.com/'
 
 
 def get_db():
@@ -39,6 +21,7 @@ def query_db(query, args=(), one=False):
     cur.close()
     return (rv[0] if rv else None) if one else rv
 
+
 def update_count(result):
     with sqlite3.connect('urls.db') as conn:
                 value1 = int(result[2]) + 1
@@ -46,6 +29,7 @@ def update_count(result):
                 cursor = conn.cursor()
                 cursor.execute('UPDATE RISP SET USED = ? WHERE FILENO = ?', (value1, value2))
                 return cursor
+
 
 @app.route('/')
 def home():
@@ -65,21 +49,18 @@ def redirect_short_url(short_url):
                         cursor = conn.cursor()
                         cursor.execute('UPDATE RISP SET USED = ? WHERE FILENO = ?', (value1, value2))
         elif result is None:
-            update_count(result)
             message = 'We are not able to locate your case'
             url = 'error.html'
-            return redirect(url, Response=message)
+            return render_template('error.html', message)
         else:
             update_count(result)
             url = 'https://www.spglawfirm.com/risperdal-message-thank-you/'
             return redirect(url)
     except Exception as e:
         print(e)
-    return redirect(url)
+        message = 'There is some kind of error!'
+    return render_template('error.html', message)
 
 
 if __name__ == '__main__':
-    # This code checks whether database table is created or not
-    # table_check()
-    # app.run(debug=True)
     app.run()
