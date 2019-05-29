@@ -21,7 +21,7 @@ import base64
 
 # Assuming urls.db is in your app root folder
 app = Flask(__name__)
-host = 'http://localhost:5000/'
+host = 'https://spg-redirect.herokuapp.com/'
 
 '''
 def table_check():
@@ -90,13 +90,30 @@ def home():
     return render_template('home.html')
 '''
 
+
+
 def query_db(query, args=(), one=False):
     cur = get_db().execute(query, args)
     rv = cur.fetchone()
     cur.close()
     return (rv[0] if rv else None) if one else rv
 
-@app.route('/')
+
+@app.route('/', methods=['GET', 'POST'])
+def home():
+    if request.method == 'POST':
+        original_url = request.form.get('url')
+        if urlparse(original_url).scheme == '':
+            url = 'https://' + original_url
+        else:
+            url = original_url
+        with sqlite3.connect('urls.db') as conn:
+            cursor = conn.cursor()
+            res = cursor.execute(
+                'INSERT INTO WEB_URL (URL) VALUES (?, ?)', [url])
+        return render_template('home.html', short_url=host + encoded_string)
+    return render_template('home.html')
+'''
 
 @app.route('/<short_url>')
 def redirect_short_url(short_url):
@@ -144,4 +161,5 @@ def redirect_short_url(short_url):
 if __name__ == '__main__':
     # This code checks whether database table is created or not
     # table_check()
-    app.run(debug=True)
+    # app.run(debug=True)
+    app.run(host=host)
