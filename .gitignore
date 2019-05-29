@@ -3,3 +3,8 @@ lib
 lib64
 pip-selfcheck.json
 pyvenv.cfg
+/.vscode/
+*.vscode
+/.vscode
+.vscode/
+__pycache__/

@@ -1,2 +1,2 @@
-# Pyster
-A URL shortening Flask micro website similar to bit.ly 
+# SPG Redirect
+An application to redirect users depending on how many times they have seen a link.
