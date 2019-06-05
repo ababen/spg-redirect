@@ -1,4 +1,7 @@
 Flask
+psycopg2
+Flask-SQLAlchemy
+Flask-Heroku
 click==6.7
 itsdangerous==0.24
 Jinja2==2.10.1
