@@ -1,7 +1,8 @@
 Flask
-psycopg2
+SQLAlchemy
 Flask-SQLAlchemy
-Flask-Heroku
+# psycopg2
+# Flask-Heroku
 click==6.7
 itsdangerous==0.24
 Jinja2==2.10.1

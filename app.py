@@ -14,6 +14,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = database
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://gzwrywxloihsue:0a7d0e6b5952a259c376bd8a0067725a28a27d2421a13fc6792923a7e0e994cb@ec2-50-19-114-27.compute-1.amazonaws.com:5432/demvn1fde4lip7'
 # DATABASE = 'urls.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 # host = 'https://spg-redirect.herokuapp.com/'
@@ -47,13 +48,20 @@ def query_db(query, args=(), one=False):
 '''
 
 def update_count(result):
+    new_used = int(result[2]) + 1
+    fileno = result[1]
+    client = Risperdal.query.filter_by(fileno=fileno).first()
+    client.used = new_used
+    db.session.commit()
+    return db
+    '''
     with sqlite3.connect('urls.db') as conn:
                 value1 = int(result[2]) + 1
                 value2 = result[1]
                 cursor = conn.cursor()
                 cursor.execute('UPDATE RISP SET USED = ? WHERE FILENO = ?', (value1, value2))
                 return cursor
-
+    '''
 
 @app.route('/')
 def home():
@@ -62,40 +70,24 @@ def home():
 
 @app.route('/status')
 def status():
-    clients = Risperdall.query.all()
-    return render_template('status.html', data=all)
+    clients = Risperdal.query.all()
+    return render_template('status.html', clients=clients)
 
-@app.route('/<short_url>')
-def redirect_short_url(short_url):
-    url = 'https://spg-redirect.herokuapp.com/'  # fallback if no URL is found
-    try:
-        result = db.session.query(Risperdal).filter(Risperdal.fileno == short_url)
-        # result = query_db('SELECT * FROM RISP WHERE FILENO=?', [short_url])
-        if result is not None and result[2] == 0:
-            url = 'https://www.spglawfirm.com/risperdal-message'
-            used = int(result[2]) + 1
-            fileno = result[1]
-            db.session.add(used)
-            db.session.add(fileno)
-            '''
-            with sqlite3.connect('urls.db') as conn:
-                        value1 = int(result[2]) + 1
-                        value2 = result[1]
-                        cursor = conn.cursor()
-                        cursor.execute('UPDATE RISP SET USED = ? WHERE FILENO = ?', (value1, value2))
-            '''
-        elif result is None:
-            message = 'We are not able to locate your case'
-            return render_template('error.html', message=message)
-        else:
-            update_count(result)
-            url = 'https://www.spglawfirm.com/risperdal-message-thank-you/'
-            return redirect(url)
-    except Exception as e:
-        print(e)
-        message = 'There is some kind of error!'
-        return render_template('error.html', message=message)
-    return redirect(url)
+
+@app.route('/<fileno>')
+def redirect_short_url(fileno):
+    # url = 'https://spg-redirect.herokuapp.com/'  # fallback if no URL is found
+    url = 'https://www.google.com'
+    client = Risperdal.query.filter_by(fileno=fileno).first()
+    if client is not None and client.used == 0:
+        message = 'Not used'
+        # Update used
+    elif client is None:
+        message = 'We are not able to locate your case in our system!'
+    else:
+        # Update used
+        message = 'Else'
+    return render_template('error.html', message=message) # return redirect(url)
 
 
 if __name__ == '__main__':
