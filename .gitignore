@@ -8,3 +8,6 @@ pyvenv.cfg
 /.vscode
 .vscode/
 __pycache__/
+venv
+*.pyc
+.DS_Store

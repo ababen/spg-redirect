@@ -1,0 +1,21 @@
+import os
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+
+class Config(object):
+    DEBUG = False
+    TESTING = False
+    CSRF_ENABLED = True
+    SECRET_KEY = 'nzQLeJQ22arv4wnvDYz6iA'
+    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+
+
+class ProductionConfig(Config):
+    DEBUG = False
+
+
+class DevelopmentConfig(Config):
+    DEVELOPMENT = True
+    DEBUG = True
+    database_file = "sqlite:///{}".format(os.path.join(basedir, "urls.db"))
+    SQLALCHEMY_DATABASE_URI = database_file
