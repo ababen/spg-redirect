@@ -41,6 +41,7 @@ def redirect_short_url(fileno):
         message = 'Else: ' + chr(client.used)
     return render_template('error.html', message=message) # return redirect(url)
 
+print(os.environ['APP_SETTINGS'])
 
 if __name__ == '__main__':
     app.run()
