@@ -7,7 +7,10 @@ app.config.from_object(os.environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+
 from models import Risperdal
+
+
 
 @app.route('/')
 def home():
@@ -41,7 +44,8 @@ def redirect_short_url(fileno):
         message = 'Else: ' + chr(client.used)
     return render_template('error.html', message=message) # return redirect(url)
 
-print(os.environ['APP_SETTINGS'])
 
 if __name__ == '__main__':
     app.run()
+    print(os.environ['APP_SETTINGS'])
+

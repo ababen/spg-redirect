@@ -17,5 +17,3 @@ class ProductionConfig(Config):
 class DevelopmentConfig(Config):
     DEVELOPMENT = True
     DEBUG = True
-    database_file = "sqlite:///{}".format(os.path.join(basedir, "urls.db"))
-    SQLALCHEMY_DATABASE_URI = database_file
