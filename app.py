@@ -2,15 +2,14 @@ from flask import Flask, request, render_template, redirect, g
 from flask_sqlalchemy import SQLAlchemy
 import os
 
+from models import Risperdal
+
 app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-
-from models import Risperdal
-
-
+print(os.environ['APP_SETTINGS'])
 
 @app.route('/')
 def home():
@@ -47,5 +46,4 @@ def redirect_short_url(fileno):
 
 if __name__ == '__main__':
     app.run()
-    print(os.environ['APP_SETTINGS'])
 
