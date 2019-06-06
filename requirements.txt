@@ -3,9 +3,6 @@ Flask-SQLAlchemy==2.1
 psycopg2==2.6.1
 Flask-Migrate==1.8.0
 Flask-Heroku
-click==6.7
-itsdangerous==0.24
 Jinja2==2.10.1
-MarkupSafe==0.23
 Werkzeug==0.11.15
 gunicorn
