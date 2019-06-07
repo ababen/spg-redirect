@@ -50,7 +50,7 @@ def home():
 
 @app.route('/status')
 def status():
-    clients = session.query.all()
+    clients = session.query(Risperdal).all()
     return render_template('status.html', clients=clients)
 
 
