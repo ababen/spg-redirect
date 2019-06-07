@@ -1,6 +1,7 @@
 Flask
 Flask-SQLAlchemy
 pymysql
+mysqlclient
 Flask-Migrate
 Flask-Heroku
 Jinja2
