@@ -67,7 +67,7 @@ def redirect_short_url(fileno):
         url = 'https://www.spglawfirm.com/risperdal-message'
         return redirect(url)
     elif client is None:
-        message = 'We are not able to locate your case in our system!'
+        message = 'We are not able to locate your case in our system! Please contact our office: (516) 741-5600'
         return render_template('error.html', message=message)
     else:
         counter = client.used + 1
