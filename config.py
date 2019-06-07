@@ -7,7 +7,6 @@ class Config(object):
     TESTING = False
     CSRF_ENABLED = True
     SECRET_KEY = 'nzQLeJQ22arv4wnvDYz6iA'
-    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
 
 
 class ProductionConfig(Config):
@@ -17,3 +16,4 @@ class ProductionConfig(Config):
 class DevelopmentConfig(Config):
     DEVELOPMENT = True
     DEBUG = True
+    # app.config['SQLALCHEMY_ECHO'] = True
