@@ -23,13 +23,13 @@
                   <div class="col-md-offset-5 col-md-3">
                      <h4>Welcome to SPG Redirect</h4>
                   </div>
-            
+
                </div>
             </div>
          </div>
          <div class="=container-fluid">
             {% for client in clients %}
-               <p>{{client.email}}</p><br />
+               <p>{{client.email}},{{client.fileno}}</p><br />
             {% endfor %}
            </div>
          <footer>
