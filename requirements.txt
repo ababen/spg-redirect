@@ -1,6 +1,5 @@
 Flask
 Flask-SQLAlchemy
-psycopg2
 pymysql
 Flask-Migrate
 Flask-Heroku
