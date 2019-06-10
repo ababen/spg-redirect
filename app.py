@@ -1,16 +1,27 @@
 from flask import Flask, request, render_template, redirect, g
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import create_engine, MetaData
-from sqlalchemy.orm import Session, sessionmaker
-from sqlalchemy import Column, String, Integer, Date
+from sqlalchemy import create_engine, MetaData, ForeignKey, Column, String, Integer, DateTime
+from sqlalchemy.orm import relationship, Session, sessionmaker, joinedload
 from sqlalchemy.ext.declarative import declarative_base
+from flask_twilio import Twilio, Response
+from twilio.twiml.messaging_response import MessagingResponse, Message
+from twilio.rest import Client
+from datetime import datetime
 import os
 
 app = Flask(__name__)
 
-engine = create_engine('mysql://pqk33wgherx3o3nd:li1jefgw2dk0rqd9@wp433upk59nnhpoh.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/snjg4buvgg8td7qa')
+# Configure Database
+database = os.environ.get('DATABASE_URL')
+engine = create_engine("mysql://pqk33wgherx3o3nd:li1jefgw2dk0rqd9@wp433upk59nnhpoh.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/snjg4buvgg8td7qa")
 Session = sessionmaker(bind=engine)
 session = Session()
+
+# Configure Twilio
+DEFAULT_NUMBER = '+15165481903'
+app.config['TWILIO_ACCOUNT_SID'] = os.environ.get('TWILIO_ACCOUNT_SID')
+app.config['TWILIO_AUTH_TOKEN'] = os.environ.get('TWILIO_AUTH_TOKEN')
+twilio = Twilio(app)
 
 Base = declarative_base()
 
@@ -20,6 +31,7 @@ class Risperdal(Base):
     email = Column(String(120), unique=True)
     fileno = Column(String(10))
     used = Column(Integer)
+    phone = Column(String, nullable=True)
 
     def __init__(self, email, fileno, used):
         self.email = email
@@ -28,6 +40,23 @@ class Risperdal(Base):
 
     def __repr__(self):
         return '<E-mail %r>' % self.email
+
+
+class Risperdal_Messages(Base):
+    __tablename__ = "Risperdal_Messages"
+    id = Column(Integer, primary_key=True)
+    fk_risperdal = Column(Integer, ForeignKey('risperdal.id'))
+    to = Column(String)
+    timestamp_ = Column(DateTime, nullable=True, default=datetime.utcnow)
+    message = Column(String)
+    risperdal = relationship("Risperdal", back_populates = "risperdal")
+
+    def __init__(self, fk_risperdal, to, message):
+        self.fk_risperdal = fk_risperdal
+        self.to = to
+        self.timestamp_ = timestamp_
+        self.message = message
+
 
 Base.metadata.create_all(engine)
 
@@ -46,6 +75,23 @@ if not session.query(Risperdal).filter(Risperdal.fileno == '12345').first():
 @app.route('/')
 def home():
     return render_template('home.html')
+
+
+@app.route('/sms_send')
+def home():
+    clients = session.query(Risperdal).all()
+    client = Client(app.config['TWILIO_ACCOUNT_SID'], app.config['TWILIO_AUTH_TOKEN'])
+
+    message = client.messages \
+        .create(
+            body="Important message from your lawyer! Click:https://www.google.com",
+            from_='+15165481903',
+            to='+15166470658'
+        )
+    
+    print(message.sid)
+
+    return render_template('sms.html', clients=clients)
 
 
 @app.route('/status')

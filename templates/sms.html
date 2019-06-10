@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+      <head>
+         <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+      </head>
+      <body>
+         <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+               <div class="navbar-header">
+                  <a class="navbar-brand" href="#">SPG Shortener</a>
+               </div>
+               <div id="navbar" class="navbar-collapse collapse">
+               </div>
+               <!--/.navbar-collapse -->
+            </div>
+         </nav>
+         <!-- Main jumbotron for a primary marketing message or call to action -->
+         <div class="jumbotron">
+            <div class="container">
+               <br />
+               <div class="row">
+                  <div class="col-md-offset-5 col-md-3">
+                     <h4>Welcome to SPG Redirect</h4>
+                  </div>
+
+               </div>
+            </div>
+         </div>
+         <div class="=container-fluid">
+            {% for client in clients %}
+               <p>{{client.email}},{{client.fileno}}</p><br />
+            {% endfor %}
+           </div>
+         <footer>
+         </footer>
+         </div>
+      </body>
+   </html>

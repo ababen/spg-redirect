@@ -4,6 +4,7 @@ pymysql
 mysqlclient
 Flask-Migrate
 Flask-Heroku
+twilio
 Jinja2
 Werkzeug
 gunicorn
