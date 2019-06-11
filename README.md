@@ -7,7 +7,7 @@ An application to redirect users depending on how many times they have seen a li
 * Ability to send SMS to one or more receipients
 * Ability to retrieve status and responses to SMS
 
-
+# Removed from PIP
 * click==6.7
 * itsdangerous==0.24
 * MarkupSafe==0.23
