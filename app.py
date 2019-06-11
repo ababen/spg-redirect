@@ -56,9 +56,9 @@ def status():
 
 @app.route('/<fileno>')
 def redirect_short_url(fileno):
-    url = 'https://spg-redirect.herokuapp.com/'  # fallback if no URL is found
+    url = 'https://redirect.spgtools.app/'  # fallback if no URL is found
     client = session.query(Risperdal).filter(Risperdal.fileno==fileno).first()
-    if client is not None and client.used == 0:
+    if client is not None and client.used < 2:
         message = 'Not used'
         counter = client.used + 1
         client.used = counter
