@@ -3,8 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine, MetaData, ForeignKey, Column, String, Integer, DateTime
 from sqlalchemy.orm import relationship, Session, sessionmaker, joinedload
 from sqlalchemy.ext.declarative import declarative_base
-from flask_twilio import Twilio, Response
-from twilio.twiml.messaging_response import MessagingResponse, Message
 from twilio.rest import Client
 from datetime import datetime
 import os
@@ -21,7 +19,6 @@ session = Session()
 DEFAULT_NUMBER = '+15165481903'
 app.config['TWILIO_ACCOUNT_SID'] = os.environ.get('TWILIO_ACCOUNT_SID')
 app.config['TWILIO_AUTH_TOKEN'] = os.environ.get('TWILIO_AUTH_TOKEN')
-twilio = Twilio(app)
 
 Base = declarative_base()
 
@@ -45,11 +42,11 @@ class Risperdal(Base):
 class Risperdal_Messages(Base):
     __tablename__ = "Risperdal_Messages"
     id = Column(Integer, primary_key=True)
-    fk_risperdal = Column(Integer, ForeignKey('risperdal.id'))
-    to = Column(String)
+    fk_risperdal = Column(Integer, ForeignKey('Risperdal.id'))
+    to = Column(String(12), nullable=True)
     timestamp_ = Column(DateTime, nullable=True, default=datetime.utcnow)
-    message = Column(String)
-    risperdal = relationship("Risperdal", back_populates = "risperdal")
+    message = Column(String(360), nullable=True)
+    risperdal = relationship("Risperdal", back_populates = "Risperdal")
 
     def __init__(self, fk_risperdal, to, message):
         self.fk_risperdal = fk_risperdal
@@ -88,7 +85,7 @@ def home():
             from_='+15165481903',
             to='+15166470658'
         )
-    
+
     print(message.sid)
 
     return render_template('sms.html', clients=clients)
