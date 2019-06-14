@@ -50,15 +50,15 @@ def home():
 
 @app.route('/status')
 def status():
-    clients = session.query.all()
+    clients = session.query(Risperdal).all()
     return render_template('status.html', clients=clients)
 
 
 @app.route('/<fileno>')
 def redirect_short_url(fileno):
-    url = 'https://spg-redirect.herokuapp.com/'  # fallback if no URL is found
+    url = 'https://redirect.spgtools.app/'  # fallback if no URL is found
     client = session.query(Risperdal).filter(Risperdal.fileno==fileno).first()
-    if client is not None and client.used == 0:
+    if client is not None and client.used < 2:
         message = 'Not used'
         counter = client.used + 1
         client.used = counter
@@ -67,7 +67,7 @@ def redirect_short_url(fileno):
         url = 'https://www.spglawfirm.com/risperdal-message'
         return redirect(url)
     elif client is None:
-        message = 'We are not able to locate your case in our system!'
+        message = 'We are not able to locate your case in our system! Please contact our office: (516) 741-5600'
         return render_template('error.html', message=message)
     else:
         counter = client.used + 1
