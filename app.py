@@ -14,7 +14,8 @@ app = Flask(__name__)
 database = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URL'] = 'mysql://pqk33wgherx3o3nd:li1jefgw2dk0rqd9@wp433upk59nnhpoh.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/snjg4buvgg8td7qa'
-engine = create_engine("mysql://pqk33wgherx3o3nd:li1jefgw2dk0rqd9@wp433upk59nnhpoh.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/snjg4buvgg8td7qa")
+engine = create_engine(
+    "mysql://pqk33wgherx3o3nd:li1jefgw2dk0rqd9@wp433upk59nnhpoh.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/snjg4buvgg8td7qa")
 Session = sessionmaker(bind=engine)
 session = Session()
 db = SQLAlchemy(app)
@@ -26,6 +27,7 @@ app.config['TWILIO_ACCOUNT_SID'] = os.environ.get('TWILIO_ACCOUNT_SID')
 app.config['TWILIO_AUTH_TOKEN'] = os.environ.get('TWILIO_AUTH_TOKEN')
 
 Base = declarative_base()
+
 
 class Risperdal(Base):
     __tablename__ = "Risperdal"
@@ -72,12 +74,12 @@ class Risperdal_Messages(Base):
 Base.metadata.create_all(engine)
 
 c1 = Risperdal(email='michael@jackson.com',
-                fileno='12345',
-                used='0')
+               fileno='12345',
+               used='0')
 
 c2 = Risperdal(email='matt@damon.com',
-                fileno='54321',
-                used='0')
+               fileno='54321',
+               used='0')
 
 # engine.execute('alter table Risperdal add column phone VARCHAR(12) after email')
 
@@ -85,6 +87,7 @@ if not session.query(Risperdal).filter(Risperdal.fileno == '12345').first():
     session.add(c1)
     session.add(c2)
     session.commit()
+
 
 @app.route('/')
 def home():
@@ -94,14 +97,14 @@ def home():
 @app.route('/send-sms',  methods=['GET', 'POST'])
 def send_sms():
     clients = session.query(Risperdal).join(Phones).all()
-    
     if request.method == 'GET':
         # do something
         return render_template('sms.html', clients=clients)
     elif request.method == 'POST':
-        client = Client(app.config['TWILIO_ACCOUNT_SID'], app.config['TWILIO_AUTH_TOKEN'])
-            
-            '''
+        client = Client(app.config['TWILIO_ACCOUNT_SID'],
+                        app.config['TWILIO_AUTH_TOKEN'])
+
+        '''
             message = client.messages \
                 .create(
                     body="Important message from your lawyer! Click: https://spg-redirect.herokuapp.com/"+str(clients.fileno),
@@ -110,9 +113,8 @@ def send_sms():
                 )
             '''
 
-            # print(message.sid)
+        # print(message.sid)
         return render_template('sms.html', clients=clients)
-    return render_template('sms.html', clients=clients)
 
 
 @app.route('/status')
@@ -124,7 +126,8 @@ def status():
 @app.route('/<int:fileno>')
 def redirect_short_url(fileno):
     url = 'https://spg-redirect.herokuapp.com/'  # fallback if no URL is found
-    client = session.query(Risperdal).filter(Risperdal.fileno==fileno).first()
+    client = session.query(Risperdal).filter(
+        Risperdal.fileno == fileno).first()
     if client is not None and client.used == 0:
         message = 'Not used'
         counter = client.used + 1
