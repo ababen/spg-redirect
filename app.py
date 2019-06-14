@@ -13,9 +13,8 @@ app = Flask(__name__)
 # Configure Database
 database = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URL'] = 'mysql://pqk33wgherx3o3nd:li1jefgw2dk0rqd9@wp433upk59nnhpoh.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/snjg4buvgg8td7qa'
-engine = create_engine(
-    "mysql://pqk33wgherx3o3nd:li1jefgw2dk0rqd9@wp433upk59nnhpoh.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/snjg4buvgg8td7qa")
+app.config['SQLALCHEMY_DATABASE_URL'] = database
+engine = create_engine(database)
 Session = sessionmaker(bind=engine)
 session = Session()
 db = SQLAlchemy(app)
@@ -103,7 +102,6 @@ def send_sms():
     elif request.method == 'POST':
         client = Client(app.config['TWILIO_ACCOUNT_SID'],
                         app.config['TWILIO_AUTH_TOKEN'])
-
         '''
             message = client.messages \
                 .create(
@@ -111,8 +109,7 @@ def send_sms():
                     from_='+15165481903',
                     to='+15166470658'
                 )
-            '''
-
+        '''
         # print(message.sid)
         return render_template('sms.html', clients=clients)
 
